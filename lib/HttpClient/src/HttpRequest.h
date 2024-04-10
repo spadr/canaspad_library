@@ -1,8 +1,13 @@
 #ifndef HttpRequest_h
 #define HttpRequest_h
 
-#include "HttpResponse.h"
+#if defined(USE_MOCK_CLIENT)
+#include "MockWiFiClientSecure.h"
+#else
 #include <WiFiClientSecure.h>
+#endif
+
+#include "HttpResponse.h"
 #include <memory>
 
 struct Result {
