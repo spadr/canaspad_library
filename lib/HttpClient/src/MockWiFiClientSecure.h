@@ -8,25 +8,17 @@
  * 主にテスト目的や開発中のプロトタイピングに使用する。
  */
 class WiFiClientSecure {
-  public:
+  private:
     int count = 0;       // 次に読むべきres内の位置
     int lastReadPos = 0; // 最後に読んだ位置
     // 事前定義されたHTTPレスポンスメッセージ
-    String res = "HTTP/1.1 200 OK\r\n"
-                 "Content-Type: application/json\r\n"
-                 "Content-Length: 578\r\n"
+    String res = "HTTP/1.1 404 Not Found\r\n"
+                 "Content-Type: text/plain\r\n"
+                 "Content-Length: 13\r\n"
                  "\r\n"
-                 "[{\"token\":\"bac4b374-db34-42b3-b6f1-3fe13c342c47\",\"value\":\"1.23\","
-                 "\"created_at\":\"2024-04-09 07:07:30.444541\",\"file_name\":\"39184367-f291-471e"
-                 "-9648-0203f46f777a\",\"user_id\":\"36584317-f291-471e-9648-0203f46f777a\","
-                 "\"file_path\":\"image/36584377-f291-471e-9648-0203f46f777a\",\"stored_in\":"
-                 "\"iot.canaspad.net/storage/v1\",\"is_delete\":\"FALSE\"},{\"token\":"
-                 "\"bac4b274-db34-42b3-b6f1-3fe13c392c47\",\"value\":\"1.23\",\"created_at\":"
-                 "\"2024-04-09 07:07:30.444541\",\"file_name\":\"39684367-f291-471e-9648-0203f46f7"
-                 "77a\",\"user_id\":\"86584377-f291-471e-9642-0203f46f777a\",\"file_path\":"
-                 "\"image/36584377-f291-471e-9648-0203f46f777a\",\"stored_in\":\"iot.canaspad.net/"
-                 "storage/v1\",\"is_delete\":\"FALSE\"}]";
+                 "404 Not Found";
 
+  public:
     /**
      * サーバー証明書を設定する。
      * @param root_ca サーバーのルートCA証明書
@@ -73,11 +65,57 @@ class WiFiClientSecure {
     }
 
     /**
-     * データを送信する。
-     * @param s 送信するデータ
+     * HTTPリクエストに基づいてレスポンスメッセージを設定する。
+     * @param request HTTPリクエストの内容
      */
-    void print(const String& s) {
-        // 書き込み動作を模倣
+    void print(const String& request) {
+        if (request.startsWith("GET /rest/v1/tube")) {
+            res = "HTTP/1.1 200 OK\r\n"
+                  "Content-Type: application/json\r\n"
+                  "Content-Length: 47\r\n"
+                  "\r\n"
+                  "[{\"token\":\"6a78pana-4d87-964d-a325-f3377ea9e584\"}]";
+        } else if (request.startsWith("POST /rest/v1/element")) {
+            res = "HTTP/1.1 200 OK\r\n"
+                  "Content-Type: application/json\r\n"
+                  "Content-Length: 273\r\n"
+                  "\r\n"
+                  "[{\"id\":\"6a78pana-4d87-964d-a325-f3377ea9e584\",\"value\":2390.405273,"
+                  "\"is_delete\":false,\"created_at\":\"2024-04-10T16:00:22\","
+                  "\"user_id\":\"6a78pana-4d87-964d-a325-f3377ea9e584\","
+                  "\"tube_token\":\"6a78pana-4d87-964d-a325-f3377ea9e584\","
+                  "\"updated_at\":\"2024-04-10T07:00:27.036506\","
+                  "\"token\":\"6a78pana-4d87-964d-a325-f3377ea9e584\"}]";
+        } else if (request.startsWith("POST /auth/v1/token")) {
+            res =
+                "HTTP/1.1 200 OK\r\n"
+                "Content-Type: application/json\r\n"
+                "Content-Length: 456\r\n"
+                "\r\n"
+                "{"
+                "\"access_token\": "
+                "\"eyJhbGunLiJIUcI1NiIsImtpZCI6InNsOTk0bTY3UmxJT1lVc3kiLCJ0eXAiOiJKV1QifQ."
+                "eyJhdWQiJiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzEyNzM2MDEwLCJpYXQiOjE3MTI3MzI0MTAsImlzcy"
+                "I6Imh0dHBzOi8vem50cWpwaHZvc2N5aGtieWx0c3ouc3VwYWJhc2UuY28vYXV0aC92MSIsInN1YiI6IjI0"
+                "M2M1ZThjLWMyBRgtNDRjZC04NjliLWIyZDk2NTE2Zjk2YiIsImVtYWlsIjoiaXUzMzIyMDAxQGhpcm9zYW"
+                "tpLXUuYWMuanAiLCJwaG9uZSI6IiIsImFwcF9tZXRhZGF5HSI6eyJwcm92aNYlciI6ImVtYWlsIiwicHJv"
+                "dmlkZXJzIjpbImVtYWlsIl19LCJ1c2VyX21ldGFkYXRhIjp7fSwicm9sZSI6ImF1dGhlbnRpY2F0ZWQiLC"
+                "JhYWwiOiJhYWwxIiwiYW1yIjpbeyJtZXRob2QiLiJwYXNzd29yZCIsInRpbWVzdGFtcCI6MTcxMjczMjQx"
+                "RG1dLCJzZXNzaW9uX2ljIjoiOWE2YjM5MWEtZDJiOC00OGY2LWE4ZDMtNjI0ZjFhMTk6YmRjIiwiaXNfYU"
+                "5vbnltb3VzIjpmYWxzZX0.q2r7_Msu90J0CsEla6kX8ZCTCpcN6GgXIIlIqiYvHRJ\","
+                "\"token_type\": \"bearer\","
+                "\"expires_in\": 3600,"
+                "\"expires_at\": 1712736010,"
+                "\"refresh_token\": \"EysHhPLvUCd5ydXAao58rM\""
+                "}";
+        } else if (request.startsWith("GET /rest/v1/element")) {
+            res = "HTTP/1.1 200 OK\r\n"
+                  "Content-Type: application/json\r\n"
+                  "Content-Length: 78\r\n"
+                  "\r\n"
+                  "[{\"value\":2390.405273,\"created_at\":\"2024-04-10T16:00:22\"}]";
+        }
+        count = 0; // レスポンスの読み取り開始位置をリセット
     }
 
     /**

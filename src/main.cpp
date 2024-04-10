@@ -1,5 +1,5 @@
-#include "Config.h"
-// #include "ConfigExample.h"
+// #include "Config.h"
+#include "ConfigExample.h"
 #include <Canaspad.h>
 #include <WiFiMulti.h>
 
@@ -93,6 +93,6 @@ void loop() {
 
         Serial.println();
 
-        delay(60 * 1000 * 5);
+        delay(60 * 1000);
     }
 }
