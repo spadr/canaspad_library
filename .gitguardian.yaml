@@ -1,0 +1,10 @@
+version: 2
+
+secret:
+  ignored-matches:
+    - match: bac4b374-db34-42b3-b6f1-3fe13c342c47
+      name: Mock Secret - lib/HttpClient/src/MockWiFiClientSecure.h
+    - match: EysHhPLvUCd5ydXAao58rM
+      name: Mock Secret - lib/HttpClient/src/MockWiFiClientSecure.h
+    - match: 6a78pana-4d87-964d-a325-f3377ea9e584
+      name: Mock Secret - lib/HttpClient/src/MockWiFiClientSecure.h
